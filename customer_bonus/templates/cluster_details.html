@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}Cluster {{ cluster_id }} Details - Customer Analysis{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1>
+                    <i class="fas fa-layer-group text-primary me-2"></i>
+                    Cluster {{ cluster_id }} Details
+                </h1>
+                <p class="text-muted">
+                    <i class="fas fa-users me-1"></i>
+                    {{ customer_count }} customers in this segment
+                </p>
+            </div>
+            <div>
+                <a href="/" class="btn btn-cluster">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    Back to Overview
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card cluster-card cluster-card-{{ cluster_id }}">
+            <div class="card-body text-center">
+                <h3 class="card-title">Cluster {{ cluster_id }} Summary</h3>
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <i class="fas fa-users" style="font-size: 2rem;"></i>
+                            <h5 class="mt-2">{{ customer_count }}</h5>
+                            <small>Total Customers</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <i class="fas fa-birthday-cake" style="font-size: 2rem;"></i>
+                            <h5 class="mt-2">{{ "%.1f"|format(customers|map(attribute='age')|select('number')|list|average) }}</h5>
+                            <small>Average Age</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <i class="fas fa-dollar-sign" style="font-size: 2rem;"></i>
+                            <h5 class="mt-2">${{ "%.0f"|format(customers|map(attribute='income')|select('number')|list|average) }}</h5>
+                            <small>Average Income</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <i class="fas fa-star" style="font-size: 2rem;"></i>
+                            <h5 class="mt-2">{{ "%.1f"|format(customers|map(attribute='score')|select('number')|list|average) }}</h5>
+                            <small>Average Score</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-id-badge me-1"></i>ID</th>
+                            <th><i class="fas fa-user me-1"></i>Name</th>
+                            <th><i class="fas fa-venus-mars me-1"></i>Gender</th>
+                            <th><i class="fas fa-birthday-cake me-1"></i>Age</th>
+                            <th><i class="fas fa-dollar-sign me-1"></i>Income</th>
+                            <th><i class="fas fa-star me-1"></i>Score</th>
+                            <th><i class="fas fa-envelope me-1"></i>Email</th>
+                            <th><i class="fas fa-map-marker-alt me-1"></i>Location</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in customers %}
+                        <tr>
+                            <td>
+                                <span class="badge bg-primary">{{ customer.id }}</span>
+                            </td>
+                            <td>
+                                <strong>{{ customer.name }}</strong>
+                            </td>
+                            <td>
+                                {% if customer.gender == 'Male' %}
+                                    <span class="badge bg-info">
+                                        <i class="fas fa-mars me-1"></i>{{ customer.gender }}
+                                    </span>
+                                {% elif customer.gender == 'Female' %}
+                                    <span class="badge bg-pink" style="background-color: #e91e63;">
+                                        <i class="fas fa-venus me-1"></i>{{ customer.gender }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ customer.gender }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark">{{ customer.age }}</span>
+                            </td>
+                            <td>
+                                <span class="text-success fw-bold">${{ customer.income }}</span>
+                            </td>
+                            <td>
+                                {% set score = customer.score|int %}
+                                {% if score >= 80 %}
+                                    <span class="badge bg-success">{{ customer.score }}</span>
+                                {% elif score >= 60 %}
+                                    <span class="badge bg-warning">{{ customer.score }}</span>
+                                {% elif score >= 40 %}
+                                    <span class="badge bg-info">{{ customer.score }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ customer.score }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="mailto:{{ customer.email }}" class="text-decoration-none">
+                                    {{ customer.email }}
+                                </a>
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    {% if customer.city != 'N/A' and customer.state != 'N/A' %}
+                                        {{ customer.city }}, {{ customer.state }}
+                                        {% if customer.country != 'N/A' %}
+                                            <br>{{ customer.country }}
+                                        {% endif %}
+                                    {% elif customer.address != 'N/A' %}
+                                        {{ customer.address }}
+                                    {% else %}
+                                        <em>No address</em>
+                                    {% endif %}
+                                </small>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-chart-bar text-info me-2"></i>
+                    Cluster {{ cluster_id }} Characteristics
+                </h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-users me-1"></i>Demographics</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Total Customers:</strong> {{ customer_count }}</li>
+                            <li><strong>Age Range:</strong> 
+                                {{ customers|map(attribute='age')|select('number')|list|min }} - 
+                                {{ customers|map(attribute='age')|select('number')|list|max }} years
+                            </li>
+                            <li><strong>Gender Distribution:</strong>
+                                <div class="mt-1">
+                                    {% set male_count = customers|selectattr('gender', 'equalto', 'Male')|list|length %}
+                                    {% set female_count = customers|selectattr('gender', 'equalto', 'Female')|list|length %}
+                                    <span class="badge bg-info me-1">Male: {{ male_count }}</span>
+                                    <span class="badge bg-pink" style="background-color: #e91e63;">Female: {{ female_count }}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-chart-line me-1"></i>Financial Profile</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Income Range:</strong> 
+                                ${{ customers|map(attribute='income')|select('number')|list|min }} - 
+                                ${{ customers|map(attribute='income')|select('number')|list|max }}
+                            </li>
+                            <li><strong>Spending Score Range:</strong> 
+                                {{ customers|map(attribute='score')|select('number')|list|min }} - 
+                                {{ customers|map(attribute='score')|select('number')|list|max }}
+                            </li>
+                            <li><strong>Customer Segment:</strong>
+                                {% set avg_income = customers|map(attribute='income')|select('number')|list|average %}
+                                {% set avg_score = customers|map(attribute='score')|select('number')|list|average %}
+                                {% if avg_income > 70000 and avg_score > 70 %}
+                                    <span class="badge bg-success">High Value</span>
+                                {% elif avg_income > 50000 and avg_score > 50 %}
+                                    <span class="badge bg-warning">Medium Value</span>
+                                {% else %}
+                                    <span class="badge bg-info">Standard</span>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12 text-center">
+        <a href="/" class="btn btn-cluster btn-lg">
+            <i class="fas fa-arrow-left me-2"></i>
+            Return to Cluster Overview
+        </a>
+    </div>
+</div>
+{% endblock %}

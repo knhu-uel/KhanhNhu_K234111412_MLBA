@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Cluster Overview - Customer Analysis{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center">
+                <h1 class="card-title">
+                    <i class="fas fa-users text-primary me-2"></i>
+                    Customer Cluster Analysis Overview
+                </h1>
+                <p class="card-text text-muted">
+                    Explore customer segments based on machine learning clustering analysis
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="mb-3">
+            <i class="fas fa-chart-bar me-2"></i>
+            Cluster Summary
+        </h2>
+    </div>
+</div>
+
+<div class="row">
+    {% for cluster in clusters %}
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card cluster-card cluster-card-{{ cluster.cluster_id }} h-100">
+            <div class="card-body text-center">
+                <div class="stats-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <h3 class="card-title">Cluster {{ cluster.cluster_id }}</h3>
+                <hr class="my-3" style="border-color: rgba(255,255,255,0.3);">
+                
+                <div class="row text-center">
+                    <div class="col-12 mb-3">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="fas fa-users me-2"></i>
+                            <strong>{{ cluster.count }} Customers</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row text-sm">
+                    <div class="col-6 mb-2">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="fas fa-birthday-cake me-1"></i>
+                            <small>Avg Age: {{ cluster.avg_age }}</small>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-2">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="fas fa-dollar-sign me-1"></i>
+                            <small>Avg Income: ${{ cluster.avg_income }}</small>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="fas fa-star me-1"></i>
+                            <small>Avg Score: {{ cluster.avg_score }}</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="/cluster/{{ cluster.cluster_id }}" class="btn btn-light btn-sm">
+                        <i class="fas fa-eye me-1"></i>
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <i class="fas fa-info-circle text-info me-2"></i>
+                    About This Analysis
+                </h4>
+                <p class="card-text">
+                    This customer segmentation analysis uses K-means clustering algorithm to group customers 
+                    based on their demographic and behavioral characteristics. Each cluster represents a 
+                    distinct customer segment with similar patterns in age, income, and spending behavior.
+                </p>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-database text-primary" style="font-size: 2rem;"></i>
+                            <h6 class="mt-2">Data Source</h6>
+                            <small class="text-muted">MySQL Customer Database</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-cogs text-success" style="font-size: 2rem;"></i>
+                            <h6 class="mt-2">Algorithm</h6>
+                            <small class="text-muted">K-means Clustering</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-chart-line text-warning" style="font-size: 2rem;"></i>
+                            <h6 class="mt-2">Features</h6>
+                            <small class="text-muted">Age, Income, Spending Score</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
